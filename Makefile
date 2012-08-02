@@ -8,7 +8,7 @@ all: ${OBJS}
 	${CC} ${CFLAGS} ${OBJS} -o cg
 
 %.o: %.c
-	${CC} ${OPTIONS} -c $*.c
+	${CC} ${CFLAGS} -c $*.c
 
 clean:
 	@echo "Cleaning up *.o"

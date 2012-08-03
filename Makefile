@@ -1,7 +1,31 @@
 CC = /usr/local/bin/gcc
+#CC = clang
 CFLAGS = -O3 -Wall -fopenmp
+PARAM_FLAGS = ${CFLAGS} ${W_FLAGS}
 LFLAGS = -Wall
-OBJS = cg-modified.o c_print_results.o c_randdp.o c_timers.o wtime.o gen-matrix.o
+OBJS = c_print_results.o c_randdp.o c_timers.o wtime.o
+CFILES = c_print_results.c c_randdp.c c_timers.c wtime.c
+
+all: ${OBJS} gen-matrix.o cg-modified.o
+	@echo "Building.."
+	${CC} ${CFLAGS} *.o -o cg
+
+run: cg
+	./cg
+
+gen-matrix.o: gen-matrix.c
+	${CC} ${PARAM_FLAGS} -c $*.c
+
+cg-modified.o: cg-modified.c
+	${CC} ${PARAM_FLAGS} -c $*.c
+
+${OBJS}: ${CFILES}
+	${CC} ${CFLAGS} -c ${CFILES}
+
+clean:
+	@echo "Cleaning up *.o"
+	-rm -rf *.o
+	-rm cg
 
 S_FLAGS = -DNA=1400 \
 	  -DNONZER=7 \
@@ -52,19 +76,4 @@ C_FLAGS = -DNA=150000 \
 	  -DCS1=${CC} \
 	  -DCS2=${CC} \
 	  -DCS3="" -DCS4="" -DCS5=${CFLAGS} -DCS6=${LFLAGS} -DCS7="randdp"
-
-all: ${OBJS}
-	@echo "Building.."
-	${CC} ${CFLAGS} ${OBJS} -o cg
-
-run: cg
-	./cg
-
-%.o: %.c
-	${CC} ${CFLAGS} ${B_FLAGS} -c $*.c
-
-clean:
-	@echo "Cleaning up *.o"
-	-rm -rf *.o
-	-rm cg
 

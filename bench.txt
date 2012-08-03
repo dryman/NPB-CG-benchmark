@@ -1,0 +1,106 @@
+
+
+ CG Benchmark Completed
+ Class           =                        B
+ Size            =                    75000
+ Iterations      =                       75
+ Threads         =                        8
+ Time in seconds =                    25.97
+ Mop/s total     =                  2106.38
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                      2.3
+ Compile date    =              03 Aug 2012
+
+ Compile options:
+    CC           = /usr/local/bin/gcc
+    CLINK        = /usr/local/bin/gcc
+    C_LIB        = 
+    C_INC        = 
+    CFLAGS       = -O3
+    CLINKFLAGS   = -Wall
+    RAND         = randdp
+
+ CG Benchmark Completed
+ Class           =                        B
+ Size            =                    75000
+ Iterations      =                       75
+ Threads         =                        4
+ Time in seconds =                    29.39
+ Mop/s total     =                  1861.69
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                      2.3
+ Compile date    =              03 Aug 2012
+
+ Compile options:
+    CC           = /usr/local/bin/gcc
+    CLINK        = /usr/local/bin/gcc
+    C_LIB        = 
+    C_INC        = 
+    CFLAGS       = -O3
+    CLINKFLAGS   = -Wall
+    RAND         = randdp
+
+ CG Benchmark Completed
+ Class           =                        B
+ Size            =                    75000
+ Iterations      =                       75
+ Threads         =                       16
+ Time in seconds =                    25.92
+ Mop/s total     =                  2110.36
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                      2.3
+ Compile date    =              03 Aug 2012
+
+ Compile options:
+    CC           = /usr/local/bin/gcc
+    CLINK        = /usr/local/bin/gcc
+    C_LIB        = 
+    C_INC        = 
+    CFLAGS       = -O3
+    CLINKFLAGS   = -Wall
+    RAND         = randdp
+
+ CG Benchmark Completed
+ Class           =                        B
+ Size            =                    75000
+ Iterations      =                       75
+ Threads         =                        2
+ Time in seconds =                    40.37
+ Mop/s total     =                  1355.31
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                      2.3
+ Compile date    =              03 Aug 2012
+
+ Compile options:
+    CC           = /usr/local/bin/gcc
+    CLINK        = /usr/local/bin/gcc
+    C_LIB        = 
+    C_INC        = 
+    CFLAGS       = -O3
+    CLINKFLAGS   = -Wall
+    RAND         = randdp
+
+ CG Benchmark Completed
+ Class           =                        B
+ Size            =                    75000
+ Iterations      =                       75
+ Threads         =                        1
+ Time in seconds =                    22.57
+ Mop/s total     =                  2424.43
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                      2.3
+ Compile date    =              03 Aug 2012
+
+ Compile options:
+    CC           = clang
+    CLINK        = clang
+    C_LIB        = 
+    C_INC        = 
+    CFLAGS       = -O3
+    CLINKFLAGS   = -Wall
+    RAND         = randdp

@@ -46,7 +46,8 @@ c---------------------------------------------------------------------
 
 #include "npb-C.h"
 #include "gen-matrix.h"
-#define STR(s) #s
+#define STR(s) XSTR(s)
+#define XSTR(s) #s
 
 #define NZ  NA*(NONZER+1)*(NONZER+1)+NA*(NONZER+2)
 

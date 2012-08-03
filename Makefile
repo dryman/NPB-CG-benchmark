@@ -1,11 +1,15 @@
 CC = /usr/local/bin/gcc
-CFLAGS = -O3 -Wall -fopenmp
-LFLAGS = -Wall -fopenmp
-OBJS = cg.o c_print_results.o c_randdp.o c_timers.o wtime.o
+CFLAGS = -g -Wall
+LFLAGS = -Wall
+OBJS = cg-modified.o c_print_results.o c_randdp.o c_timers.o wtime.o
+
 
 all: ${OBJS}
 	@echo "Building.."
 	${CC} ${CFLAGS} ${OBJS} -o cg
+
+run: cg
+	./cg
 
 %.o: %.c
 	${CC} ${CFLAGS} -c $*.c

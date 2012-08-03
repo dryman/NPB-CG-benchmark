@@ -4,10 +4,6 @@
 
 static int naa;
 static int nzz;
-static int firstrow;
-static int lastrow;
-static int firstcol;
-static int lastcol;
 
 /* common /urando/ */
 static double amult;

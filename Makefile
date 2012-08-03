@@ -1,10 +1,12 @@
 #CC = /usr/local/bin/gcc
 CC = clang
-PARAM_FLAGS = ${CFLAGS} ${A_FLAGS}
+PARAM_FLAGS = ${CFLAGS} ${A_FLAGS} -DCACHE_LINE_SIZE=${CACHE_LINE_SIZE}
 CFLAGS = -O3 -Wall -fopenmp -fblocks
 LFLAGS = -Wall
 OBJS = c_print_results.o c_randdp.o c_timers.o wtime.o
 CFILES = c_print_results.c c_randdp.c c_timers.c wtime.c
+
+CACHE_LINE_SIZE = $(shell sysctl -n hw.cachelinesize)
 
 all: ${OBJS} gen-matrix cg
 	@echo "Building.."

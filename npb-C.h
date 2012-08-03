@@ -1,7 +1,8 @@
 /*
   NAS Parallel Benchmarks 2.3 OpenMP C Versions
  */
-
+#ifndef NPB_C_H
+#define NPB_C_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -40,3 +41,4 @@ extern void c_print_results(char *name, char class, int n1, int n2,
 			    char *npbversion, char *compiletime, char *cc,
 			    char *clink, char *c_lib, char *c_inc,
 			    char *cflags, char *clinkflags, char *rand);
+#endif

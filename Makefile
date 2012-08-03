@@ -1,7 +1,7 @@
 CC = /usr/local/bin/gcc
-CFLAGS = -g -Wall
+CFLAGS = -g -Wall -fopenmp
 LFLAGS = -Wall
-OBJS = cg-modified.o c_print_results.o c_randdp.o c_timers.o wtime.o
+OBJS = cg-modified.o c_print_results.o c_randdp.o c_timers.o wtime.o gen-matrix.o
 
 
 all: ${OBJS}

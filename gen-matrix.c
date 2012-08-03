@@ -1,5 +1,6 @@
 #include "npb-C.h"
 #include "npbparams.h"
+#include "gen-matrix.h"
 #define NZ  NA*(NONZER+1)*(NONZER+1)+NA*(NONZER+2)
 
 static int naa;
@@ -39,10 +40,6 @@ c
 c       iv, arow, acol i
 c       v, aelt        r*8
 c---------------------------------------------------------------------*/
-static void makea(int n, int nz, double a[], int colidx[], int rowstr[],
-          int nonzer, int firstrow, int lastrow, int firstcol,
-          int lastcol, double rcond, int arow[], int acol[],
-          double aelt[], double v[], int iv[], double shift );
 static void sparse(double a[], int colidx[], int rowstr[], int n,
            int arow[], int acol[], double aelt[],
            int firstrow, int lastrow,
@@ -54,7 +51,7 @@ static void vecset(int n, double v[], int iv[], int *nzv, int i, double val);
 
 
 
-static void makea(
+void makea(
     int n,
     int nz,
     double a[],     /* a[1:nz] */

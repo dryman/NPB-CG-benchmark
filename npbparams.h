@@ -4,6 +4,8 @@ c  This file is generated automatically by the setparams utility.
 c  It sets the number of processors and the class of the NPB
 c  in this directory. Do not modify it by hand.
 */
+#ifndef NPBPARAMS_H
+#define NPBPARAMS_H
 #define	NA	1400
 #define	NONZER	7
 #define	NITER	15
@@ -19,3 +21,4 @@ c  in this directory. Do not modify it by hand.
 #define CS5 "-O3 -fopenmp"
 #define CS6 "-fopenmp"
 #define CS7 "randdp"
+#endif

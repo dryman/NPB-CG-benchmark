@@ -1,23 +1,20 @@
-CC = /usr/local/bin/gcc
-#CC = clang
-CFLAGS = -O3 -Wall -fopenmp
-PARAM_FLAGS = ${CFLAGS} ${W_FLAGS}
+#CC = /usr/local/bin/gcc
+CC = clang
+PARAM_FLAGS = ${CFLAGS} ${A_FLAGS}
+CFLAGS = -O3 -Wall -fopenmp -fblocks
 LFLAGS = -Wall
 OBJS = c_print_results.o c_randdp.o c_timers.o wtime.o
 CFILES = c_print_results.c c_randdp.c c_timers.c wtime.c
 
-all: ${OBJS} gen-matrix.o cg-modified.o
+all: ${OBJS} gen-matrix cg
 	@echo "Building.."
 	${CC} ${CFLAGS} *.o -o cg
 
-run: cg
-	./cg
+gen-matrix: gen-matrix.c
+	${CC} ${PARAM_FLAGS} -c $?
 
-gen-matrix.o: gen-matrix.c
-	${CC} ${PARAM_FLAGS} -c $*.c
-
-cg-modified.o: cg-modified.c
-	${CC} ${PARAM_FLAGS} -c $*.c
+cg: cg-dispatch.c
+	${CC} ${PARAM_FLAGS} -c $?
 
 ${OBJS}: ${CFILES}
 	${CC} ${CFLAGS} -c ${CFILES}

@@ -1,5 +1,4 @@
 #include "npb-C.h"
-#include "npbparams.h"
 #include "gen-matrix.h"
 #define NZ  NA*(NONZER+1)*(NONZER+1)+NA*(NONZER+2)
 

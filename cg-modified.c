@@ -45,8 +45,8 @@ c---------------------------------------------------------------------
 */
 
 #include "npb-C.h"
-#include "npbparams.h"
 #include "gen-matrix.h"
+#define STR(s) #s
 
 #define NZ  NA*(NONZER+1)*(NONZER+1)+NA*(NONZER+2)
 
@@ -336,8 +336,8 @@ c-------------------------------------------------------------------*/
 
     c_print_results("CG", class, NA, 0, 0, NITER, nthreads, t, 
             mflops, "          floating point", 
-            verified, NPBVERSION, COMPILETIME,
-            CS1, CS2, CS3, CS4, CS5, CS6, CS7);
+            verified, STR(NPBVERSION), STR(COMPILETIME),
+            STR(CS1), STR(CS2), STR(CS3), STR(CS4), STR(CS5), STR(CS6), STR(CS7));
 }
 
 /*--------------------------------------------------------------------

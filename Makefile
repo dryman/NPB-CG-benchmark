@@ -1,8 +1,8 @@
 #CC = /usr/local/bin/gcc -fopenmp
 CC = clang -fblocks
-PARAM_FLAGS = ${CFLAGS} ${B_FLAGS} -DCACHE_LINE_SIZE=${CACHE_LINE_SIZE}
+PARAM_FLAGS = ${CFLAGS} ${C_FLAGS} -DCACHE_LINE_SIZE=${CACHE_LINE_SIZE}
 CFLAGS = -O3
-LFLAGS = -Wall
+LFLAGS = -Wall -lcblas
 OBJS = c_print_results.o c_randdp.o c_timers.o wtime.o
 CFILES = c_print_results.c c_randdp.c c_timers.c wtime.c
 
@@ -10,7 +10,7 @@ CACHE_LINE_SIZE = $(shell sysctl -n hw.cachelinesize)
 
 all: ${OBJS} gen-matrix cg
 	@echo "Building.."
-	${CC} ${CFLAGS} *.o -o cg
+	${CC} ${LFLAGS} *.o -o cg
 
 cg: cg-dispatch.c
 	${CC} ${PARAM_FLAGS} -c $?
@@ -32,9 +32,9 @@ S_FLAGS = -DNA=1400 \
 	  -DSHIFT=10.0 -DRCOND=1.0e-1 -DCONVERTDOUBLE=FALSE \
 	  -DCOMPILETIME="03 Aug 2012" \
 	  -DNPBVERSION="2.3" \
-	  -DCS1=${CC} \
-	  -DCS2=${CC} \
-	  -DCS3="" -DCS4="" -DCS5=${CFLAGS} -DCS6=${LFLAGS} -DCS7="randdp"
+	  -DCS1="${CC}" \
+	  -DCS2="${CC}" \
+	  -DCS3="" -DCS4="" -DCS5="${CFLAGS}" -DCS6="${LFLAGS}" -DCS7="randdp"
 
 W_FLAGS = -DNA=7000 \
 	  -DNONZER=8 \
@@ -42,9 +42,9 @@ W_FLAGS = -DNA=7000 \
 	  -DSHIFT=12.0 -DRCOND=1.0e-1 -DCONVERTDOUBLE=FALSE \
 	  -DCOMPILETIME="03 Aug 2012" \
 	  -DNPBVERSION="2.3" \
-	  -DCS1=${CC} \
-	  -DCS2=${CC} \
-	  -DCS3="" -DCS4="" -DCS5=${CFLAGS} -DCS6=${LFLAGS} -DCS7="randdp"
+	  -DCS1="${CC}" \
+	  -DCS2="${CC}" \
+	  -DCS3="" -DCS4="" -DCS5="${CFLAGS}" -DCS6="${LFLAGS}" -DCS7="randdp"
 
 A_FLAGS = -DNA=14000 \
 	  -DNONZER=11 \
@@ -52,9 +52,9 @@ A_FLAGS = -DNA=14000 \
 	  -DSHIFT=20.0 -DRCOND=1.0e-1 -DCONVERTDOUBLE=FALSE \
 	  -DCOMPILETIME="03 Aug 2012" \
 	  -DNPBVERSION="2.3" \
-	  -DCS1=${CC} \
-	  -DCS2=${CC} \
-	  -DCS3="" -DCS4="" -DCS5=${CFLAGS} -DCS6=${LFLAGS} -DCS7="randdp"
+	  -DCS1="${CC}" \
+	  -DCS2="${CC}" \
+	  -DCS3="" -DCS4="" -DCS5="${CFLAGS}" -DCS6="${LFLAGS}" -DCS7="randdp"
 
 B_FLAGS = -DNA=75000 \
 	  -DNONZER=13 \
@@ -62,9 +62,9 @@ B_FLAGS = -DNA=75000 \
 	  -DSHIFT=60.0 -DRCOND=1.0e-1 -DCONVERTDOUBLE=FALSE \
 	  -DCOMPILETIME="03 Aug 2012" \
 	  -DNPBVERSION="2.3" \
-	  -DCS1=${CC} \
-	  -DCS2=${CC} \
-	  -DCS3="" -DCS4="" -DCS5=${CFLAGS} -DCS6=${LFLAGS} -DCS7="randdp"
+	  -DCS1="${CC}" \
+	  -DCS2="${CC}" \
+	  -DCS3="" -DCS4="" -DCS5="${CFLAGS}" -DCS6="${LFLAGS}" -DCS7="randdp"
 
 C_FLAGS = -DNA=150000 \
 	  -DNONZER=15 \
@@ -72,7 +72,7 @@ C_FLAGS = -DNA=150000 \
 	  -DSHIFT=110.0 -DRCOND=1.0e-1 -DCONVERTDOUBLE=FALSE \
 	  -DCOMPILETIME="03 Aug 2012" \
 	  -DNPBVERSION="2.3" \
-	  -DCS1=${CC} \
-	  -DCS2=${CC} \
-	  -DCS3="" -DCS4="" -DCS5=${CFLAGS} -DCS6=${LFLAGS} -DCS7="randdp"
+	  -DCS1="${CC}" \
+	  -DCS2="${CC}" \
+	  -DCS3="" -DCS4="" -DCS5="${CFLAGS}" -DCS6="${LFLAGS}" -DCS7="randdp"
 

@@ -365,8 +365,6 @@ c-------------------------------------------------------------------*/
     for (size_t j = 0; j < NA+2; j++) {
       q[j] = 0.0;
       z[j] = 0.0;
-    //   r[j] = x[j];
-    //   p[j] = r[j];
       w[j] = 0.0;
     }
 
@@ -374,35 +372,7 @@ c-------------------------------------------------------------------*/
 c  rho = r.r
 c  Now, obtain the norm of r: First, sum squares of r elements locally...
 c-------------------------------------------------------------------*/
-    // TODO: reduction
-//    __block double testRho = 0.0;
-//    dispatch_apply(NA,s_queue,^(size_t idx){
-//      testRho += x[idx+1]*x[idx+1];
-//    });
-    /*
-    dispatch_async(s_queue,^{
-      for (size_t j = DIVIDE*STRIDE+1; j < NA+1; j++){
-        rho += x[j]*x[j];
-      }
-    });
-    dispatch_apply(DIVIDE, c_queue, ^(size_t idx){
-      size_t j = idx * STRIDE+1;
-      size_t j_e = j + STRIDE;
-      double sum=0.0;
-      do {
-        sum += x[j]*x[j];
-      } while (++j < j_e);
-      dispatch_sync(s_queue,^{
-        rho += sum;
-      });
-    });
-    */
-    rho = cblas_ddot(NA,&(x[1]),1 ,&(x[1]),1);
-    /*
-    for (size_t j = 1; j <= lastcol-firstcol+1; j++) {
-      rho = rho + x[j]*x[j];
-    }
-    */
+    rho = cblas_ddot(NA,&(r[1]),1 ,&(r[1]),1);
 
 /*--------------------------------------------------------------------
 c  The conj grad iteration loop
@@ -434,13 +404,15 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
         }
         q[j] = sum;
       });
-//       for (size_t j = 1; j <= lastrow-firstrow+1; j++) {
-//           sum = 0.0;
-//           for (size_t k = rowstr[j]; k < rowstr[j+1]; k++) {
-//             sum = sum + a[k]*p[colidx[k]];
-//           }
-//           w[j] = sum;
-//       }
+      /*
+      for (size_t j = 1; j <= lastrow-firstrow+1; j++) {
+          sum = 0.0;
+          for (size_t k = rowstr[j]; k < rowstr[j+1]; k++) {
+            sum = sum + a[k]*p[colidx[k]];
+          }
+          w[j] = sum;
+      }
+      */
 /* unrolled-by-two version 
     #pragma omp for private(i,k)
       for (j = 1; j <= lastrow-firstrow+1; j++) {
@@ -481,55 +453,11 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
              w[j] = sum;
          }
     */
-        
-        
-        // Clang
-        // Maybe better to use cblas copy?
-        /*
-        for (size_t j = 0; j < lastcol+1; j++) {
-          q[j] = w[j];
-        }
-        */
-        //cblas_dcopy (NA, &(w[1]), 1, &(q[1]), 1);
-
-    /*--------------------------------------------------------------------
-    c  Clear w for reuse...
-    c-------------------------------------------------------------------*/
-        // Clang
-        /*
-        for (size_t j = 0; j < lastcol+1; j++) {
-          w[j] = 0.0;
-        }
-        */
 
     /*--------------------------------------------------------------------
     c  Obtain p.q
     c-------------------------------------------------------------------*/
-        //
-        /*
-        dispatch_async(s_queue,^{
-          for (size_t j = DIVIDE*STRIDE+1; j < NA+1; j++){
-            d += p[j]*q[j];
-          }
-        });
-        dispatch_apply(DIVIDE,c_queue,^(size_t idx){
-          size_t j = idx * STRIDE + 1;
-          size_t j_e = j + STRIDE;
-          double sum = 0.0;
-          do {
-            sum += p[j]*q[j];
-          } while (++j < j_e);
-          dispatch_sync (s_queue, ^{
-            d += sum;
-          });
-        });
-        */
         d = cblas_ddot(NA,&(p[1]),1, &(q[1]),1);
-        /*
-        for (size_t j = 1; j <= lastcol-firstcol+1; j++) {
-                d = d + p[j]*q[j];
-        }
-        */
 
     /*--------------------------------------------------------------------
     c  Obtain alpha = rho / (p.q)
@@ -545,64 +473,14 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
     c  Obtain z = z + alpha*p
     c  and    r = r - alpha*q
     c---------------------------------------------------------------------*/
-        // TODO parallel
-        /*
-        dispatch_async(s_queue,^{
-          for (size_t j = DIVIDE*STRIDE+1; j < NA+1; j++){
-            z[j] = z[j] + alpha * p[j];
-            r[j] = r[j] - alpha * q[j];
-          }
-        });
-        dispatch_apply(DIVIDE,c_queue,^(size_t idx){
-          size_t j = idx * STRIDE + 1;
-          size_t j_e = j + STRIDE;
-          do {
-            z[j] = z[j] + alpha * p[j];
-            r[j] = r[j] - alpha * q[j];
-          } while (++j < j_e);
-        });
-        */
         cblas_daxpy(NA,  alpha, &(p[1]), 1,  &(z[1]), 1);
         cblas_daxpy(NA, -alpha, &(q[1]), 1,  &(r[1]), 1);
-          
-        /*
-        for (size_t j = 1; j <= lastcol-firstcol+1; j++) {
-                z[j] = z[j] + alpha*p[j];
-                r[j] = r[j] - alpha*q[j];
-        }
-        */
-                
+
     /*---------------------------------------------------------------------
     c  rho = r.r
     c  Now, obtain the norm of r: First, sum squares of r elements locally...
     c---------------------------------------------------------------------*/
-        // TODO reduction
-        /*
-        dispatch_async(s_queue,^{
-          for (size_t j = DIVIDE*STRIDE+1; j < NA+1; j++){
-            rho += r[j]*r[j];
-          }
-        });
-        dispatch_apply(DIVIDE, c_queue, ^(size_t idx){
-          size_t j = idx * STRIDE+1;
-          size_t j_e = j + STRIDE;
-          double sum=0.0;
-          do {
-            sum += r[j]*r[j];
-          } while (++j < j_e);
-          dispatch_sync(s_queue,^{
-            rho += sum;
-          });
-        });
-        */
-        // rho = cblas_dnrm2 (NA, &(r[1]), 1);
-
         rho = cblas_ddot (NA, &(r[1]), 1, &(r[1]), 1);
-        /*
-        for (size_t j = 1; j <= lastcol-firstcol+1; j++) {
-                rho = rho + r[j]*r[j];
-        }
-        */
 
     /*--------------------------------------------------------------------
     c  Obtain beta:
@@ -612,29 +490,9 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
     /*--------------------------------------------------------------------
     c  p = r + beta*p
     c-------------------------------------------------------------------*/
-        // TODO parallel
-        /*
-        dispatch_async(s_queue,^{
-          for (size_t j = DIVIDE*STRIDE+1; j < NA+1; j++){
-            p[j] = r[j] + beta * p[j];
-          }
-        });
-        dispatch_apply(DIVIDE,c_queue,^(size_t idx){
-          size_t j = idx * STRIDE + 1;
-          size_t j_e = j + STRIDE;
-          do { 
-            p[j] = r[j] + beta * p[j]; 
-          } while(++j < j_e);
-        });
-        */
         cblas_dscal (NA, beta, &(p[1]), 1);
         cblas_daxpy (NA, 1, &(r[1]), 1,  &(p[1]), 1);
-        /*
-        for (size_t j = 1; j <= lastcol-firstcol+1; j++) {
-                p[j] = r[j] + beta*p[j];
-        }
-        */
-      } /* end of do cgit=1,cgitmax */
+    } /* end of do cgit=1,cgitmax */
 
     /*---------------------------------------------------------------------
     c  Compute residual norm explicitly:  ||r|| = ||x - A.z||
@@ -652,90 +510,14 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
           }
           r[j] = sum;
         });
-        // for (size_t j = 1; j <= lastrow-firstrow+1; j++) {
-        //   d = 0.0;
-        //   for (size_t k = rowstr[j]; k <= rowstr[j+1]-1; k++) {
-        //     d = d + a[k]*z[colidx[k]];
-        //   }
-        //   w[j] = d;
-        // }
-
-        // Clang
-        /*
-        for (size_t j = 0; j < lastcol+1; j++) {
-          r[j] = w[j];
-        }
-        */
 
     /*--------------------------------------------------------------------
-    c  At this point, r contains A.z
+    c  At this point, r contains A.z - x
     c-------------------------------------------------------------------*/
-    // TODO: reduction
-        /*
-        dispatch_apply(DIVIDE,c_queue,^(size_t idx){
-          size_t j = idx * STRIDE + 1;
-          size_t j_e = j + STRIDE;
-          do {
-            w[j] = (x[j] - r[j]);
-            j++;
-          } while (j<j_e);
-          dispatch_async(c_queue,^{
-            size_t j = idx * STRIDE + 1;
-            double d = 0.0;
-            do {
-              d += w[j]*w[j];
-              j++;
-            } while (j<j_e);
-            dispatch_async(s_queue,^{
-              sum += d;
-            });
-          });
-        });
-        dispatch_barrier_sync(s_queue,^{
-          for (size_t j = DIVIDE*STRIDE+1; j < NA+1; j++){
-            w[j] = (x[j] - r[j]);
-          }
-        });
-        dispatch_barrier_sync(s_queue,^{
-          for (size_t j = DIVIDE*STRIDE+1; j < NA+1; j++){
-            sum += w[j]*w[j];
-          }
-        });
-        */
-        /*
-        sum = 0.0;
-        dispatch_async(s_queue,^{
-          for (size_t j = DIVIDE*STRIDE+1; j < NA+1; j++){
-            d = x[j] - r[j];
-            sum += d*d;
-          }
-        });
-        dispatch_apply(DIVIDE,c_queue,^(size_t idx){
-          size_t j = idx * STRIDE + 1;
-          size_t j_e = j + STRIDE;
-          double dd = 0.0;
-          double d = 0.0;
-          do {
-            dd = x[j] - r[j];
-            d += dd*dd;
-          } while (++j < j_e);
-          dispatch_sync(s_queue,^{
-            sum += d;
-          });
-        });
-        */
         cblas_daxpy (NA, -1, &(x[1]), 1,  &(r[1]), 1);
-        //sum = cblas_dnrm2 (NA, &(r[1]), 1);
-        /*
-        for (size_t j = 1; j <= lastcol-firstcol+1; j++) {
-          d = x[j] - r[j];
-          sum = sum + d*d;
-        }
-        */
         
         (*rnorm) = cblas_dnrm2 (NA, &(r[1]), 1);
-        //(*rnorm) = sqrt(sum);
-       dispatch_release (c_queue);
-       dispatch_release (s_queue);
+        dispatch_release (c_queue);
+        dispatch_release (s_queue);
     }
 

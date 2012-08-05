@@ -1,6 +1,6 @@
 #CC = /usr/local/bin/gcc -fopenmp
 CC = clang -fblocks
-PARAM_FLAGS = ${CFLAGS} ${C_FLAGS} -DCACHE_LINE_SIZE=${CACHE_LINE_SIZE}
+PARAM_FLAGS = ${CFLAGS} ${A_FLAGS} -DCACHE_LINE_SIZE=${CACHE_LINE_SIZE}
 CFLAGS = -O3
 LFLAGS = -Wall -lcblas
 OBJS = c_print_results.o c_randdp.o c_timers.o wtime.o
@@ -12,7 +12,7 @@ all: ${OBJS} gen-matrix cg
 	@echo "Building.."
 	${CC} ${LFLAGS} *.o -o cg
 
-cg: cg-dispatch.c
+cg: cg-blas-dispatch.c
 	${CC} ${PARAM_FLAGS} -c $?
 
 gen-matrix: gen-matrix.c

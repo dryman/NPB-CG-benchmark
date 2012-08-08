@@ -45,7 +45,15 @@ c---------------------------------------------------------------------
 */
 
 #include <dispatch/dispatch.h>
+
+#ifdef __APPLE__
 #include <Accelerate/Accelerate.h>
+#else
+#include <cblas.h>
+#define DISPATCH_QUEUE_SERIAL NULL
+#define DISPATCH_QUEUE_CONCURRENT (&_dispatc_queue_attr_concurrent)
+#endif
+
 #include "npb-C.h"
 #include "gen-matrix.h"
 #define STR(s) XSTR(s)

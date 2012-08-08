@@ -1,8 +1,13 @@
+# freebsd gcc 4.6
+CC = gcc46 -fopenmp
+# gcc 4.8 from osx hpc
 #CC = /usr/local/bin/gcc -fopenmp
-CC = clang -fblocks
-PARAM_FLAGS = ${CFLAGS} ${B_FLAGS} -DCACHE_LINE_SIZE=${CACHE_LINE_SIZE}
-CFLAGS = -O3 -gdwarf-2
-LFLAGS = -Wall -lcblas
+#CC = clang -fblocks
+PARAM_FLAGS = ${CINC} ${CFLAGS} ${A_FLAGS} -DCACHE_LINE_SIZE=${CACHE_LINE_SIZE}
+CFLAGS = -O3
+LFLAGS = -Wall -lcblas -ldispatch
+CINC = -I/usr/local/include
+CLINK = -L/usr/local/lib
 OBJS = c_print_results.o c_randdp.o c_timers.o wtime.o
 CFILES = c_print_results.c c_randdp.c c_timers.c wtime.c
 
@@ -10,9 +15,9 @@ CACHE_LINE_SIZE = $(shell sysctl -n hw.cachelinesize)
 
 all: ${OBJS} gen-matrix cg
 	@echo "Building.."
-	${CC} ${LFLAGS} *.o -o cg
+	${CC} ${CLINK} ${LFLAGS} *.o -o cg
 
-cg: cg-blas-dispatch.c
+cg: cg-modified.c
 	${CC} ${PARAM_FLAGS} -c $?
 
 gen-matrix: gen-matrix.c

@@ -417,6 +417,7 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
 */
 
 /* rolled version */      
+/*
 #pragma omp for private(sum,k)
     for (j = 1; j <= lastrow-firstrow+1; j++) {
             sum = 0.0;
@@ -425,8 +426,9 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
         }
             w[j] = sum;
     }
+    */
     
-/* unrolled-by-two version
+/* unrolled-by-two version */
 #pragma omp for private(i,k)
         for (j = 1; j <= lastrow-firstrow+1; j++) {
         int iresidue;
@@ -442,7 +444,6 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
         }
             w[j] = sum1 + sum2;
         }
-*/
 /* unrolled-by-8 version
 #pragma omp for private(i,k,sum)
         for (j = 1; j <= lastrow-firstrow+1; j++) {

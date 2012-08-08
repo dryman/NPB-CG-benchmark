@@ -399,10 +399,20 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
       dispatch_apply (NA, c_queue, ^(size_t idx){
         size_t j = idx+1;
         double sum = 0.0;
+        double sum1 = 0.0, sum2 = 0.0;
+        size_t i = rowstr[j];
+        size_t iresidue = (rowstr[j+1]-i) %2;
+        if (iresidue == 1) sum1 = sum1 + a[i]*p[colidx[i]];
+        /*
         for (size_t k = rowstr[j]; k < rowstr[j+1]; k++){
           sum += a[k]*p[colidx[k]];
         }
-        q[j] = sum;
+        */
+        for (size_t k = i+iresidue; k <= rowstr[j+1]-2; k += 2) {
+          sum1 = sum1 + a[k]   * p[colidx[k]];
+          sum2 = sum2 + a[k+1] * p[colidx[k+1]];
+        }
+        q[j] = sum1 + sum2;
       });
       /*
       for (size_t j = 1; j <= lastrow-firstrow+1; j++) {
@@ -430,6 +440,28 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
           w[j] = sum1 + sum2;
       }
 */
+    /*
+    dispatch_apply (NA, c_queue, ^(size_t idx){
+      size_t j = idx+1;
+      size_t i = rowstr[j];
+      size_t iresidue = (rowstr[j+1]-i) % 8;
+      sum = 0.0;
+      for (size_t k = i; k <= i+iresidue-1; k++) {
+          sum = sum +  a[k] * p[colidx[k]];
+      }
+      for (size_t k = i+iresidue; k <= rowstr[j+1]-8; k+=8) {
+        sum = sum + a[k  ] * p[colidx[k  ]]
+                  + a[k+1] * p[colidx[k+1]]
+                  + a[k+2] * p[colidx[k+2]]
+                  + a[k+3] * p[colidx[k+3]]
+                  + a[k+4] * p[colidx[k+4]]
+                  + a[k+5] * p[colidx[k+5]]
+                  + a[k+6] * p[colidx[k+6]]
+                  + a[k+7] * p[colidx[k+7]];
+       }
+       q[j] = sum;
+     });
+     */
 /* unrolled-by-8 version
     #pragma omp for private(i,k,sum)
          for (j = 1; j <= lastrow-firstrow+1; j++) {
@@ -504,11 +536,21 @@ C        on the Cray t3d - overall speed of code is 1.5 times faster.
         // TODO: NO unrolled version?
         dispatch_apply(NA,c_queue,^(size_t idx){
           size_t j = idx+1;
-          double sum = 0.0;
+          double sum1 = 0.0, 
+                 sum2 = 0.0;
+          size_t i = rowstr[j];
+          size_t iresidue = (rowstr[j+1]-i) %2;
+          if (iresidue == 1) sum1 = sum1 + a[i]*z[colidx[i]];
+          /*
           for (size_t k = rowstr[j]; k < rowstr[j+1]; k++){
             sum += a[k] * z[colidx[k]];
           }
-          r[j] = sum;
+          */
+          for (size_t k = i+iresidue; k <= rowstr[j+1]-2; k += 2) {
+            sum1 = sum1 + a[k]   * z[colidx[k]];
+            sum2 = sum2 + a[k+1] * z[colidx[k+1]];
+          }
+          r[j] = sum1+sum2;
         });
 
     /*--------------------------------------------------------------------

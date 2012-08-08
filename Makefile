@@ -1,7 +1,7 @@
 #CC = /usr/local/bin/gcc -fopenmp
 CC = clang -fblocks
-PARAM_FLAGS = ${CFLAGS} ${A_FLAGS} -DCACHE_LINE_SIZE=${CACHE_LINE_SIZE}
-CFLAGS = -O3
+PARAM_FLAGS = ${CFLAGS} ${B_FLAGS} -DCACHE_LINE_SIZE=${CACHE_LINE_SIZE}
+CFLAGS = -O3 -gdwarf-2
 LFLAGS = -Wall -lcblas
 OBJS = c_print_results.o c_randdp.o c_timers.o wtime.o
 CFILES = c_print_results.c c_randdp.c c_timers.c wtime.c
